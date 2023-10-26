@@ -1,2 +1,3 @@
 # LojaVirtual
-Consiste em Ecommerce de pesca
+Consiste em uma API de um ecommerce
+
