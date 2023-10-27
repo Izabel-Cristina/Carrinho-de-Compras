@@ -6,6 +6,9 @@ import br.com.lojapesca.lojadepesca.dto.ResponseDTO;
 import br.com.lojapesca.lojadepesca.service.CarrinhoService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+
 @Service
 public class CarrinhoServiceImpl implements CarrinhoService {
 
@@ -18,7 +21,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             responseDTO.setCode(ResponseDTO.Status.SUCCESS.ordinal());
             responseDTO.setStatus(ResponseDTO.Status.SUCCESS);
             responseDTO.setErrorMessage(ResponseDTO.Code.SUCCESS.getMessageCode());
-            responseDTO.setData(carrinhoBo.carrinho(carrinhoDTO));
+            responseDTO.setData(carrinhoBo.adicionarProdutoCarrinho(carrinhoDTO));
 
         } catch (Exception e) {
             responseDTO.setCode(ResponseDTO.Status.ERROR.ordinal());

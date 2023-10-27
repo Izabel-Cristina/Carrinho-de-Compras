@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import br.com.lojapesca.lojadepesca.bo.ProdutoBo;
 import br.com.lojapesca.lojadepesca.dto.ProdutoDTO;
 import org.junit.Before;
+
 import java.util.List;
 
 
@@ -63,14 +64,13 @@ public class TesteProduto {
     }
 
     @Test
-    public void testNomeNull()  {
+    public void testNomeNull() {
         String nome = new String("");
 
         List<Produto> produtos = produtoBo.obterProdutosNome(nome);
         assertNotNull(nome);
         assertFalse(produtos.isEmpty());
     }
-
 
 
     @Test
