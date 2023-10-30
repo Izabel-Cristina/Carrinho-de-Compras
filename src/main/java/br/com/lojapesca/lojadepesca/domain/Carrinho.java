@@ -1,5 +1,6 @@
 package br.com.lojapesca.lojadepesca.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,16 +16,18 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 public class Carrinho {
+
     @Id
+    @Column(name = "id_Carrinho")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name= "produto_id")
-    private Produto produto;
-    @Column(name = "quantidade_produto")
-    private Integer quantidadeProduto;
-    @Column(name = "preco_unitario")
-    private Double precoUnitarioProduto;
+    @Column(name = "produto_item")
+    @Nullable
+    @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL)
+    private List<Pedido> pedido = new ArrayList<>();
+    @Nullable
+    private Integer quantidade;
     @Column(name = "valor_total")
-    private Double precoTotalProduto;
+    @Nullable
+    private Double valorTotal;
 }

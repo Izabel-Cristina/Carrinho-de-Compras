@@ -6,7 +6,6 @@ import br.com.lojapesca.lojadepesca.dto.ResponseDTO;
 import br.com.lojapesca.lojadepesca.service.CarrinhoService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 
 @Service

@@ -27,10 +27,10 @@ public class CarrinhoResource extends BaseResource {
 
     @GetMapping("/carrinho")
     public ResponseEntity<ResponseDTO> carrinho(@RequestBody @Valid CarrinhoDTO carrinhoDTO) {
-        List<Produto> produtos = new ArrayList<>();
-        return (ResponseEntity<ResponseDTO>) list(carrinhoService.carrinho(carrinhoDTO));
+        return (ResponseEntity<ResponseDTO>) createdCodeReturn(carrinhoService.carrinho(carrinhoDTO));
     }
 
+    //Resource usado para realizar as validações com a dependencia validation
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {

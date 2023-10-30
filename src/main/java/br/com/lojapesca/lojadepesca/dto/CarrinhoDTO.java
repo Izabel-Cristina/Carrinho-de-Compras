@@ -22,7 +22,7 @@ import java.util.List;
 public class CarrinhoDTO {
     private Long id;
     @NotNull(message="acrescente no minimo um produto.")
-    private Produto produto;
+    private List<PedidoDTO> pedido;
     @Min(value=1, message="acrescente no minimo uma unidade.")
     private Integer quantidadeProduto;
     private Double precoTotalProduto;

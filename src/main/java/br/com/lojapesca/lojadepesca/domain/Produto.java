@@ -1,7 +1,6 @@
 package br.com.lojapesca.lojadepesca.domain;
 
 
-import jakarta.annotation.Generated;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,8 @@ public class Produto implements Serializable {
     public static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_produto")
+    private Long idProduto;
     @Column
     @Nullable
     private String nome;

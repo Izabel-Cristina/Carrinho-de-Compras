@@ -43,7 +43,6 @@ public class ProdutoBo {
                         2, descricao);
                 statement.setDouble(3, preco);
 
-
                 // Executar a inserção
                 int rowsAffected = statement.executeUpdate();
 
