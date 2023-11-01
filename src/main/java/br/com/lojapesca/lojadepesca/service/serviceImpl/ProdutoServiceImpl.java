@@ -32,7 +32,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public ResponseDTO<ProdutoDTO> listarProdutos(String nome) {
+    public ResponseDTO<ProdutoDTO> listarProdutos() {
         ResponseDTO responseDTO = new ResponseDTO();
 
         try {
@@ -64,8 +64,8 @@ public class ProdutoServiceImpl implements ProdutoService {
         } catch (Exception e) {
             responseDTO.setCode(ResponseDTO.Status.ERROR.ordinal());
             responseDTO.setStatus(ResponseDTO.Status.ERROR);
-            responseDTO.setCode(ResponseDTO.Code.ERROR_PRODUTO.getCode());
-            responseDTO.setErrorMessage(ResponseDTO.Code.ERROR_PRODUTO.getMessageCode());
+            responseDTO.setCode(ResponseDTO.Code.ERROR_PRODUTO_INVALIDO.getCode());
+            responseDTO.setErrorMessage(ResponseDTO.Code.ERROR_PRODUTO_INVALIDO.getMessageCode());
             responseDTO.setData(null);
         }
         return responseDTO;

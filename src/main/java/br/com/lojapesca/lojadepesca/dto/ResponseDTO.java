@@ -47,9 +47,6 @@ public class ResponseDTO<T> {
         this.data = data;
     }
 
-    public void setStatus(Integer code) {
-    }
-
     public enum Status {
         SUCCESS, ERROR, WARN;
     }
@@ -57,7 +54,8 @@ public class ResponseDTO<T> {
     public enum Code {
         SUCCESS(0, "Operação realizada com sucesso"),
         ERROR_PRODUTO(1, "Erro ao inserir produto"),
-        ERROR_CARRINHO(2,"Verifique os itens no seu carrinho");
+        ERROR_PRODUTO_INVALIDO(2,"Produto não encontrado."),
+        ERROR_CARRINHO(3,"Verifique os itens no seu carrinho");
 
         private Integer code;
         private String messageCode;
@@ -86,7 +84,6 @@ public class ResponseDTO<T> {
         public static Code findByCode(Integer code) {
             return codeMap.get(code);
         }
-
 
     }
 }

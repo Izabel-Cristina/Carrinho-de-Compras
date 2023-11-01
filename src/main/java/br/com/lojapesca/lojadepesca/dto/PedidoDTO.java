@@ -1,5 +1,6 @@
 package br.com.lojapesca.lojadepesca.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PedidoDTO {
-    private Long id;
+    @JsonIgnore
+    private Long idPedido;
     @NotBlank
     private ProdutoDTO produtoDTO;
     @NotNull

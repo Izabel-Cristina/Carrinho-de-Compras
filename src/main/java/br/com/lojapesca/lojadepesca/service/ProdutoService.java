@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProdutoService {
     ResponseDTO<ProdutoDTO> inserirProduto(ProdutoDTO produtoDTO);
-    ResponseDTO<ProdutoDTO>listarProdutos(String nome);
+    ResponseDTO<ProdutoDTO>listarProdutos();
     ResponseDTO<ProdutoDTO> obterProdutosNome(String nome);
 
 }

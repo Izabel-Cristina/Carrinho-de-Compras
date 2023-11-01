@@ -1,6 +1,7 @@
 package br.com.lojapesca.lojadepesca.dto;
 
 import br.com.lojapesca.lojadepesca.domain.Produto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
@@ -20,10 +21,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CarrinhoDTO {
+    @JsonIgnore
     private Long id;
-    @NotNull(message="acrescente no minimo um produto.")
+    @NotNull
+    @Min(value = 1, message = "acrescente no minimo um produto.")
     private List<PedidoDTO> pedido;
-    @Min(value=1, message="acrescente no minimo uma unidade.")
+    @Min(value = 1, message = "acrescente no minimo uma unidade.")
     private Integer quantidadeProduto;
     private Double precoTotalProduto;
 }

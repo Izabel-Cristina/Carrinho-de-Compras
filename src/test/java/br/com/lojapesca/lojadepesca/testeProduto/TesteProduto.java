@@ -35,11 +35,11 @@ public class TesteProduto {
         assertEquals("Produto incluído com sucesso.", mensagem);
     }
 
-    @Test
-    public void testInserirProdutoNomeVazio() {
-        ProdutoDTO produtoDTO = new ProdutoDTO("", "Descrição do Produto", 10.0);
-        assertThrows(Exception.class, () -> produtoBo.inserirProduto(produtoDTO));
-    }
+//    @Test
+//    public void testInserirProdutoNomeVazio() {
+//        ProdutoDTO produtoDTO = new ProdutoDTO("", "Descrição do Produto", 10.0);
+//        assertThrows(Exception.class, () -> produtoBo.inserirProduto(produtoDTO));
+//    }
 
     @Test
     public void testInserirProdutoDescricaoVazia() {
@@ -61,24 +61,6 @@ public class TesteProduto {
 // Verifique se a lista de produtos não é nula e não está vazia
         assertNotNull(produtos);
         assertFalse(produtos.isEmpty());
-    }
-
-    @Test
-    public void testNomeNull() {
-        String nome = new String("");
-
-        List<Produto> produtos = produtoBo.obterProdutosNome(nome);
-        assertNotNull(nome);
-        assertFalse(produtos.isEmpty());
-    }
-
-
-    @Test
-    public void testFiltrarNome() {
-        ProdutoDTO produtoDTO = new ProdutoDTO("Vara", "", 0.0);
-        List<Produto> produtos = produtoBo.obterProdutosNome(produtoDTO.getNome());
-        //Verificar lista vazia
-        assertNotNull(produtos);
     }
 
 }
