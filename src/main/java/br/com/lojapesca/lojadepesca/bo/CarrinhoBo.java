@@ -1,19 +1,14 @@
 package br.com.lojapesca.lojadepesca.bo;
 
 import br.com.lojapesca.lojadepesca.domain.Carrinho;
-import br.com.lojapesca.lojadepesca.domain.Item;
-import br.com.lojapesca.lojadepesca.domain.Produto;
 import br.com.lojapesca.lojadepesca.dto.CarrinhoDTO;
 import br.com.lojapesca.lojadepesca.dto.ItemDTO;
-import br.com.lojapesca.lojadepesca.dto.ProdutoDTO;
-import br.com.lojapesca.lojadepesca.repository.CarrinhoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -75,8 +70,6 @@ public class CarrinhoBo {
                     item.getProdutoDTO().getIdProduto();
 
 
-
-
                     valorTotalItem += preco;
                     valorTotalCarrinho = valorTotalItem * quantidade;
 
@@ -96,70 +89,68 @@ public class CarrinhoBo {
                                 mensagem = "Produto incluído com sucesso.";
 
 
-                                String sqlItem = "SELECT id_carrinho FROM item WHERE id_item = ?";
-                                PreparedStatement statement1 = conexaoBancoBo.getConnection().prepareStatement(sqlItem);
-                                statement.setLong(1, idItem);
-
-                                ResultSet resultSet1 = statement.executeQuery();
-                                if (resultSet1.next()) {
-                                    idCarrinho = resultSet1.getLong("id_carrinho");
-
-                                try {
-                                    String sqlAtualizar = "UPDATE item SET id_carrinho = ? WHERE id_item= ?";
-                                    PreparedStatement statementUpdate = conexaoBancoBo.getConnection().prepareStatement(sqlAtualizar);
-                                    statementUpdate.setLong(1, idCarrinho);
-                                    statementUpdate.setLong(1, idItem);
-                                    statementUpdate.close();
-
-
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
+                                resultSet.close();
                                 statementInsercao.close();
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
-                    } catch(SQLException e){
-                        e.printStackTrace();
-                    }
+
+                        String sqlItem = "SELECT id_carrinho FROM carrinho WHERE id_item = ?";
+                        PreparedStatement statement1 = conexaoBancoBo.getConnection().prepareStatement(sqlItem);
+                        statement.setLong(1, idItem);
+
+                        ResultSet resultSet1 = statement.executeQuery();
+                        if (resultSet1.next()) {
+                            idCarrinho = resultSet1.getLong("id_carrinho");
+
+                            try {
+                                String sqlAtualizar = "UPDATE item SET id_carrinho = ? WHERE id_item= ?";
+                                PreparedStatement statementUpdate = conexaoBancoBo.getConnection().prepareStatement(sqlAtualizar);
+                                statementUpdate.setLong(1, idCarrinho);
+                                statementUpdate.setLong(1, idItem);
+                                statementUpdate.close();
+
+
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         carrinhoDTO.setQuantidadeProduto(quantidade);
                         carrinhoDTO.setPrecoTotalProduto(valorTotalItem);
 
 
+                    } else {
+                        try {
 
+                            sql = "UPDATE carrinho SET quantidade = ?, valor_total = ? WHERE id_carrinho = ?";
+                            PreparedStatement statementUpdate = conexaoBancoBo.getConnection().prepareStatement(sql);
+                            statementUpdate.setInt(1, quantidade);
+                            statementUpdate.setDouble(2, preco);
+                            statementUpdate.setLong(3, id);
 
-
-
-                } else {
-                    try {
-
-                        sql = "UPDATE carrinho SET quantidade = ?, valor_total = ? WHERE id_carrinho = ?";
-                        PreparedStatement statementUpdate = conexaoBancoBo.getConnection().prepareStatement(sql);
-                        statementUpdate.setInt(1, quantidade);
-                        statementUpdate.setDouble(2, preco);
-                        statementUpdate.setLong(3, id);
-
-                        int executarAtualizacao = statementUpdate.executeUpdate();
-                        if (executarAtualizacao > 0) {
+                            int executarAtualizacao = statementUpdate.executeUpdate();
+                            if (executarAtualizacao > 0) {
+                            }
+                            resultSet.close();
+                            statementUpdate.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
-                        resultSet.close();
-                        statementUpdate.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
                     }
                 }
-            }
 
-        } catch(SQLException e){
-            e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
         carrinhoDTO.setQuantidadeProduto(quantidade);
         carrinhoDTO.setPrecoTotalProduto(valorTotalCarrinho);
 
 
         return carrinhoDTO;
-}
+    }
 
     public List<CarrinhoDTO> listarCarrinho() {
         CarrinhoDTO carrinhoDTO = new CarrinhoDTO();
