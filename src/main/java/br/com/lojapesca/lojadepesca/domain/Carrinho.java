@@ -1,5 +1,6 @@
 package br.com.lojapesca.lojadepesca.domain;
 
+import br.com.lojapesca.lojadepesca.dto.CarrinhoDTO;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,19 +17,24 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Carrinho {
-
+@Table(name = "carrinho", catalog = "loja_pesca")
+public class Carrinho implements Serializable {
+    public static final long serialVersionUID = 1L;
     @Id
-    @Column(name = "id_Carrinho")
+    @Column(name = "id_carrinho")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "produto_item")
-    @Nullable
-    @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL)
-    private List<Pedido> pedido = new ArrayList<>();
+
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "id_carrinho", referencedColumnName = "id_carrinho")
+    private List<Item> itens = new ArrayList<>();
+
     @Nullable
     private Integer quantidade;
     @Column(name = "valor_total")
     @Nullable
     private Double valorTotal;
+
+    public void add(CarrinhoDTO carrinhoDTO) {
+    }
 }

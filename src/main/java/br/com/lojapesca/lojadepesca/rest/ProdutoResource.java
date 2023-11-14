@@ -68,6 +68,30 @@ public class ProdutoResource extends BaseResource {
         return (ResponseEntity<ResponseDTO<ProdutoDTO>>) list(produtoService.obterProdutosNome(nome));
     }
 
+    @Operation(summary = "Atualizar Produto", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "operação realizada com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Falha na operação")})
+    @PatchMapping(value = "/atualizarProduto")
+    public ResponseEntity<ResponseDTO<ProdutoDTO>> atualizarProduto(@RequestBody(required = false) @Valid ProdutoDTO produtoDTO){
+        return (ResponseEntity<ResponseDTO<ProdutoDTO>>)updatedCodeReturn(produtoService.atualizarProduto(produtoDTO));
+    }
+
+
+    @Operation(summary = "Deletar Produto - " +
+            "Para realizar a exclusão do produto é necessário informar o 'id' do produto que deseja deletar.", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "operação realizada com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Falha na operação")})
+    @DeleteMapping(value = "deletarproduto")
+    public ResponseEntity<ResponseDTO<ProdutoDTO>>deletarProduto(@RequestParam(required = false)Long id){
+        return (ResponseEntity<ResponseDTO<ProdutoDTO>>) deleteCodeReturn(produtoService.deletarProduto(id));
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {

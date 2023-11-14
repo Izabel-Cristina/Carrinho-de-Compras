@@ -55,7 +55,11 @@ public class ResponseDTO<T> {
         SUCCESS(0, "Operação realizada com sucesso"),
         ERROR_PRODUTO(1, "Erro ao inserir produto"),
         ERROR_PRODUTO_INVALIDO(2,"Produto não encontrado."),
-        ERROR_CARRINHO(3,"Verifique os itens no seu carrinho");
+        ERROR_ATUALIZAR_PRODUTO(3, "Erro ao atualizar o produto"),
+        ERROR_DELETAR_PRODUTO(4, "Erro ao tentar deletar o produto"),
+        ERROR_CARRINHO(5,"Verifique os itens no seu carrinho"),
+        ERROR_REMOVER_ITEM(6,"Erro ao tentar remover item"),
+        ERROR_ATUALIZAR_QUANTIDADE_ITEM(7,"Erro ao tentar atualizar a quantidade, verifique o produto informado.");
 
         private Integer code;
         private String messageCode;

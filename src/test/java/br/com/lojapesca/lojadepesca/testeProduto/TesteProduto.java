@@ -1,6 +1,7 @@
 package br.com.lojapesca.lojadepesca.testeProduto;
 
 import br.com.lojapesca.lojadepesca.domain.Produto;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import br.com.lojapesca.lojadepesca.bo.ProdutoBo;
 import br.com.lojapesca.lojadepesca.dto.ProdutoDTO;
@@ -32,19 +33,19 @@ public class TesteProduto {
         produtoDTO.setDescricao("Vara intermediária para auxiliar na sua pesca");
         produtoDTO.setPreco(170.00);
         String mensagem = produtoBo.inserirProduto(produtoDTO);
-        assertEquals("Produto incluído com sucesso.", mensagem);
+        Assert.<Exception>assertEquals("Produto incluído com sucesso.", mensagem);
     }
 
-//    @Test
-//    public void testInserirProdutoNomeVazio() {
-//        ProdutoDTO produtoDTO = new ProdutoDTO("", "Descrição do Produto", 10.0);
-//        assertThrows(Exception.class, () -> produtoBo.inserirProduto(produtoDTO));
-//    }
+    @Test
+    public void testInserirProdutoNomeVazio() {
+        ProdutoDTO produtoDTO = new ProdutoDTO("", "Descrição do Produto", 10.0);
+        Assert.<Exception>assertThrows(Exception.class, () -> produtoBo.inserirProduto(produtoDTO));
+    }
 
     @Test
     public void testInserirProdutoDescricaoVazia() {
         ProdutoDTO produtoDTO = new ProdutoDTO("Nome do Produto", "", 10.0);
-        assertThrows(Exception.class, () -> produtoBo.inserirProduto(produtoDTO));
+        Assert.<Exception>assertThrows(Exception.class, () -> produtoBo.inserirProduto(produtoDTO));
     }
 
     @Test
@@ -62,6 +63,7 @@ public class TesteProduto {
         assertNotNull(produtos);
         assertFalse(produtos.isEmpty());
     }
+
 
 }
 

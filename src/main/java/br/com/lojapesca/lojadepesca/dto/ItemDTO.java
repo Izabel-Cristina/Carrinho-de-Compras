@@ -1,8 +1,8 @@
 package br.com.lojapesca.lojadepesca.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.GeneratedValue;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +12,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PedidoDTO {
-    @JsonIgnore
-    private Long idPedido;
-    @NotBlank
+public class ItemDTO {
+    private Long idItem;
+    @NotNull(message = "Necessário incluir pelo menos um produto!")
     private ProdutoDTO produtoDTO;
-    @NotNull
+    @Min(value = 1, message = "")
     private Integer quantidade;
-    @NotNull
-    private CarrinhoDTO CarrinhoDTO;
+    private Double valorTotal;
+    private CarrinhoDTO carrinhoDTO;
 }

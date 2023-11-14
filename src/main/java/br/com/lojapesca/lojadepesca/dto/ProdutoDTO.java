@@ -13,8 +13,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProdutoDTO {
-    @JsonIgnore
     private Long idProduto;
     @NotBlank(message = "O campo 'Nome' está vazio")
     @Column(unique = true)
@@ -22,8 +22,7 @@ public class ProdutoDTO {
     @NotBlank(message = "O campo 'Descrição' está vazio")
     @Column()
     private String descricao;
-    @NotNull
-    @Min(value = 1,message = "O campo 'Preço' tem que ser maior que 0 e não pode ser vazio")
+    @Min(value = 1, message = "O campo preço não pode ser menor que 1")
     private Double preco;
 
     public ProdutoDTO(String nome, String descricao, Double preco) {

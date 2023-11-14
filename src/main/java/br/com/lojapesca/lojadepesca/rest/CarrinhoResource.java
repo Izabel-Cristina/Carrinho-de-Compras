@@ -33,7 +33,7 @@ public class CarrinhoResource extends BaseResource {
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Falha na operação")})
-    @GetMapping("/carrinho")
+    @PostMapping("/carrinho")
     public ResponseEntity<ResponseDTO> carrinho(@RequestBody @Valid CarrinhoDTO carrinhoDTO) {
         return (ResponseEntity<ResponseDTO>) createdCodeReturn(carrinhoService.carrinho(carrinhoDTO));
     }

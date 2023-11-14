@@ -1,13 +1,7 @@
 package br.com.lojapesca.lojadepesca.dto;
 
-import br.com.lojapesca.lojadepesca.domain.Produto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +18,14 @@ public class CarrinhoDTO {
     @JsonIgnore
     private Long id;
     @NotNull
-    @Min(value = 1, message = "acrescente no minimo um produto.")
-    private List<PedidoDTO> pedido;
+    @Size(min = 1, message = "Acrescente no mínimo um produto.")
+    private List<ItemDTO> itens;
     @Min(value = 1, message = "acrescente no minimo uma unidade.")
     private Integer quantidadeProduto;
     private Double precoTotalProduto;
+    public CarrinhoDTO(List<ItemDTO>itens, Integer quantidadeProduto, Double precoTotalProduto){
+        this.itens = itens;
+        this.quantidadeProduto =  quantidadeProduto;
+        this.precoTotalProduto = precoTotalProduto;
+    }
 }

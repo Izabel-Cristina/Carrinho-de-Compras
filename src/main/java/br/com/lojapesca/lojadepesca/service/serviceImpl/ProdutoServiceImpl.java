@@ -69,5 +69,40 @@ public class ProdutoServiceImpl implements ProdutoService {
             responseDTO.setData(null);
         }
         return responseDTO;
+    } @Override
+    public ResponseDTO<ProdutoDTO> atualizarProduto(ProdutoDTO produtoDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        try {
+            responseDTO.setCode(ResponseDTO.Status.SUCCESS.ordinal());
+            responseDTO.setStatus(ResponseDTO.Status.SUCCESS);
+            responseDTO.setErrorMessage(ResponseDTO.Code.SUCCESS.getMessageCode());
+            responseDTO.setData(produtoBo.atualizarProduto(produtoDTO));
+
+        } catch (Exception e) {
+            responseDTO.setCode(ResponseDTO.Status.ERROR.ordinal());
+            responseDTO.setStatus(ResponseDTO.Status.ERROR);
+            responseDTO.setCode(ResponseDTO.Code.ERROR_ATUALIZAR_PRODUTO.getCode());
+            responseDTO.setErrorMessage(ResponseDTO.Code.ERROR_ATUALIZAR_PRODUTO.getMessageCode());
+            responseDTO.setData(null);
+        }
+        return responseDTO;
+    }public ResponseDTO<ProdutoDTO>deletarProduto(Long id) {
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        try {
+            responseDTO.setCode(ResponseDTO.Status.SUCCESS.ordinal());
+            responseDTO.setStatus(ResponseDTO.Status.SUCCESS);
+            responseDTO.setErrorMessage(ResponseDTO.Code.SUCCESS.getMessageCode());
+            responseDTO.setData(produtoBo.deletarProduto(id));
+
+        } catch (Exception e) {
+            responseDTO.setCode(ResponseDTO.Status.ERROR.ordinal());
+            responseDTO.setStatus(ResponseDTO.Status.ERROR);
+            responseDTO.setCode(ResponseDTO.Code.ERROR_DELETAR_PRODUTO.getCode());
+            responseDTO.setErrorMessage(ResponseDTO.Code.ERROR_DELETAR_PRODUTO.getMessageCode());
+            responseDTO.setData(null);
+        }
+        return responseDTO;
     }
 }
