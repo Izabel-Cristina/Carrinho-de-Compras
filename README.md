@@ -1,9 +1,9 @@
 <html>
-
 <h1>Carrinho de Compras</h1>
 Consiste em uma api de um carrinho de compras.
-Temos a parte de autenticação para coseguir acessar algumas rotas.</br>
-![imagem4](https://github.com/Izabel-Cristina/LojaVirtual/assets/115845859/0f4d8d7d-7b69-41ca-b42f-1649e9723c97)
+  
+Temos a parte de autenticação para realizar o registro de usuário e login, sendo que algumas rotas somente quem tiver um perfil de administrador consegue ter acesso a algumas rotas .</br>
+![imagem4](https://github.com/Izabel-Cristina/LojaVirtual/assets/115845859/4f0fc8c7-d945-446d-9c33-c0b07132c92a)
 
 Conseguimos inserir, alterar e deletar produtos, sendo somente possível essas coisas ser feitas por um perfil ADMIN.
 Já o listar produtos é permitido que fique visivel para todos.</br>
@@ -15,6 +15,7 @@ Temos a parte de itens que é usado para atualizar a quantiade de itens e o dele
 
 E no carrinho conseguimos inserir produtos no carrinho determinando a quanidade de cada produto por meio de item, a rota inserir itens no  carrinho está permitido para todos.
 ![imagem3](https://github.com/Izabel-Cristina/LojaVirtual/assets/115845859/5842fa36-0b9e-4d43-953c-9ac4df4e6a01)
+
 
 </br>
 <h4>Foi utilizada as seguintes tecnologias:</h4>
