@@ -5,12 +5,14 @@ import br.com.lojapesca.lojadepesca.dto.ItemDTO;
 import br.com.lojapesca.lojadepesca.dto.ProdutoDTO;
 import br.com.lojapesca.lojadepesca.dto.ResponseDTO;
 import br.com.lojapesca.lojadepesca.service.ItemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    ItemBO itemBO = new ItemBO();
+    @Autowired
+    ItemBO itemBO;
     @Override
     public  ResponseDTO<ItemDTO> inserirItem(ItemDTO itemDTO) {
         ResponseDTO responseDTO = new ResponseDTO();

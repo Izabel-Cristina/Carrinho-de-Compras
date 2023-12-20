@@ -19,5 +19,5 @@ public class ItemDTO {
     @Min(value = 1, message = "")
     private Integer quantidade;
     private Double valorTotal;
-    private CarrinhoDTO carrinhoDTO;
+
 }

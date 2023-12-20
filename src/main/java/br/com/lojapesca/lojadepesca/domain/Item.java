@@ -1,6 +1,5 @@
 package br.com.lojapesca.lojadepesca.domain;
 
-import br.com.lojapesca.lojadepesca.dto.ProdutoDTO;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,7 +32,7 @@ public class Item implements Serializable {
     @Column(name = "valor_total_item")
     private Double valorTotal;
 
-    @ManyToOne
-    @JoinColumn(name = "id_carrinho", referencedColumnName = "id_carrinho")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_carrinho", nullable = false)
     private Carrinho carrinho;
 }

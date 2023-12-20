@@ -22,12 +22,9 @@ public class ProdutoDTO {
     @NotBlank(message = "O campo 'Descrição' está vazio")
     @Column()
     private String descricao;
-    @Min(value = 1, message = "O campo preço não pode ser menor que 1")
+    @Min(value = 1, message = "O campo 'Preço' não pode ser menor que 1")
     private Double preco;
 
-    public ProdutoDTO(String nome, String descricao, Double preco) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
+    public ProdutoDTO( String nome, String descricao, Double preco) {
     }
 }

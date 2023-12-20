@@ -1,18 +1,29 @@
 package br.com.lojapesca.lojadepesca.bo;
 
+import br.com.lojapesca.lojadepesca.domain.Produto;
 import br.com.lojapesca.lojadepesca.dto.CarrinhoDTO;
 import br.com.lojapesca.lojadepesca.dto.ItemDTO;
 import br.com.lojapesca.lojadepesca.dto.ProdutoDTO;
+import br.com.lojapesca.lojadepesca.repository.ProdutoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
 public class ItemBO {
+    private final ProdutoRepository produtoRepository;
+
+    public ItemBO(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
+
     ConexaoBancoBo conexaoBancoBo = new ConexaoBancoBo();
 
     public ItemDTO adicionarItens(ItemDTO itemDTO) throws Exception {
@@ -28,6 +39,7 @@ public class ItemBO {
         Integer quantidade = itemDTO.getQuantidade();
         String mensagem = "";
         Integer adicionarQuantidade = 0;
+        Double precoTotal = 0.00;
 
 
         if (itemDTO.getProdutoDTO().getNome().trim().isEmpty() || itemDTO.getQuantidade().equals(null)) {
@@ -47,27 +59,20 @@ public class ItemBO {
                 preco = resultSet.getDouble("preco");
                 descricao = resultSet.getString("descricao");
 
-
                 itemDTO.getProdutoDTO().setDescricao(descricao);
-
 
                 itemDTO.getProdutoDTO().setIdProduto(id);
 
-
                 valorTotalItem += preco;
-
 
                 quantidadeTotal += quantidade;
 
-                quantidade = itemDTO.getQuantidade();
-                Double precoTotal = preco * quantidade;
-                itemDTO.setValorTotal(precoTotal);
+                quantidadeTotal = itemDTO.getQuantidade();
+                precoTotal = preco * quantidade;
+
                 itemDTO.getProdutoDTO().setPreco(preco);
-                itemDTO.setQuantidade(quantidadeTotal);
 
-
-
-            } else if (preco == null || preco == 0D) {
+            } else if (precoTotal == null || precoTotal == 0D) {
                 throw new Exception();
             }
             //
@@ -76,63 +81,8 @@ public class ItemBO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        itemDTO.setValorTotal(precoTotal);
 
-
-        String sqlItem = "SELECT id_item, id_produto, quantidade_produto, valor_total_item FROM item WHERE id_produto = ?";
-        PreparedStatement statement = conexaoBancoBo.getConnection().prepareStatement(sqlItem);
-        statement.setLong(1, itemDTO.getProdutoDTO().getIdProduto());
-        ResultSet resultSet = statement.executeQuery();
-        if (resultSet.next()) {
-
-            id = resultSet.getLong("id_produto");
-            idItem = resultSet.getLong("id_item");
-            quantidade = resultSet.getInt("quantidade_produto");
-            valorTotalItem = resultSet.getDouble("valor_total_item");
-
-            itemDTO.setIdItem(idItem);
-
-            if (!idItem.equals(null)) {
-                quantidade += itemDTO.getQuantidade();
-
-                sqlItem = "UPDATE Item SET quantidade_produto = ?, valor_total_item = ? WHERE id_produto = ?";
-                PreparedStatement statementUpdate = conexaoBancoBo.getConnection().prepareStatement(sqlItem);
-                statementUpdate.setInt(1, quantidade);
-                statementUpdate.setDouble(2, valorTotalItem);
-                statementUpdate.setLong(3, id);
-
-
-                int executarAtualizacao = statementUpdate.executeUpdate();
-                if (executarAtualizacao > 0) {
-                    return itemDTO;
-                } else {
-                    mensagem = "Erro";
-                }
-                resultSet.close();
-                statementUpdate.close();
-            }
-
-        } else {
-            String sqlInsercao = "INSERT INTO item (id_produto, quantidade_produto, valor_total_item) VALUES (?, ?, ?)";
-            PreparedStatement statementInsercao = conexaoBancoBo.getConnection().prepareStatement(sqlInsercao);
-            statementInsercao.setLong(1, id);
-            statementInsercao.setInt(2, quantidade);
-            statementInsercao.setDouble(3, valorTotalItem);
-
-            ResultSet resultSetInsercao = statement.executeQuery();
-
-            int rowsAffected = statementInsercao.executeUpdate();
-
-            if (rowsAffected > 0) {
-                mensagem = "Produto incluído com sucesso.";
-            } else {
-                mensagem = "Erro";
-            }
-            statementInsercao.close();
-            resultSetInsercao.close();
-        }
-        itemDTO.getProdutoDTO().setPreco(preco);
-        itemDTO.setQuantidade(quantidadeTotal);
-        itemDTO.setValorTotal(valorTotalItem);
         return itemDTO;
     }
 
@@ -166,7 +116,6 @@ public class ItemBO {
 
     public ItemDTO atualizarQuantidadeItem(ItemDTO itemDTO) throws Exception {
 
-
         Integer quantidade = itemDTO.getQuantidade();
         Long idProduto = itemDTO.getProdutoDTO().getIdProduto();
 
@@ -182,7 +131,6 @@ public class ItemBO {
             idProdutoAt = resultSet.getLong("id_produto");
 
             idItemAt = resultSet.getLong("id_item");
-
 
             if (!idItemAt.equals(null)) {
                 try {
@@ -226,8 +174,8 @@ public class ItemBO {
 
                 itemDTO.setQuantidade(quantidadeProduto);
                 itemDTO.setValorTotal(valorTotalItem);
-
             }
+
             if (id.equals("") || id.equals(null)) {
 // Se a lista de produtos estiver vazia, você pode adicionar um produto especial "não encontrado".
                 throw new Exception();
@@ -239,8 +187,51 @@ public class ItemBO {
         }
         return itemDTO;
     }
-}
 
+    public List<Optional<ItemDTO>> obterDadosIdCarrinho(Long id) throws Exception {
+
+        List<Optional<ItemDTO>> lista = new ArrayList<>();
+
+        try {
+            String sqlSelect = "SELECT id_produto, quantidade_produto, valor_total_item FROM item WHERE id_carrinho = ?";
+            PreparedStatement statement = conexaoBancoBo.getConnection().prepareStatement(sqlSelect);
+            statement.setLong(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Long idProduto = resultSet.getLong("id_produto");
+                Integer quantidadeProduto = resultSet.getInt("quantidade_produto");
+                Double valorTotalItem = resultSet.getDouble("valor_total_item");
+
+                Optional<Produto> produtoDT = produtoRepository.findById(idProduto);
+
+                if (produtoDT.isPresent()) {
+                    ProdutoDTO produtoDTO = new ProdutoDTO();
+                    produtoDTO.setIdProduto(idProduto);
+                    produtoDTO.setNome(produtoDT.get().getNome());
+                    produtoDTO.setDescricao(produtoDT.get().getDescricao());
+                    produtoDTO.setPreco(produtoDT.get().getPreco());
+
+                    ItemDTO itemDTO = new ItemDTO();
+                    itemDTO.setQuantidade(quantidadeProduto);
+                    itemDTO.setValorTotal(valorTotalItem);
+                    itemDTO.setProdutoDTO(produtoDTO);
+
+                    lista.add(Optional.of(itemDTO));
+                } else {
+//                     Se o resultado estiver vazio, você pode lançar uma exceção ou retornar null, dependendo do seu requisito.
+                    throw new Exception();
+                }
+            }
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+}
 
 
 

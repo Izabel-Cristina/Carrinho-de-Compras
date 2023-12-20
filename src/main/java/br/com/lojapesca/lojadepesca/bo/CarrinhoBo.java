@@ -1,183 +1,216 @@
 package br.com.lojapesca.lojadepesca.bo;
 
 import br.com.lojapesca.lojadepesca.domain.Carrinho;
+import br.com.lojapesca.lojadepesca.domain.Item;
+import br.com.lojapesca.lojadepesca.domain.Produto;
 import br.com.lojapesca.lojadepesca.dto.CarrinhoDTO;
 import br.com.lojapesca.lojadepesca.dto.ItemDTO;
+
+import br.com.lojapesca.lojadepesca.dto.ProdutoDTO;
+import br.com.lojapesca.lojadepesca.mapper.ItemMapper;
+import br.com.lojapesca.lojadepesca.mapper.ProdutoMapper;
+import br.com.lojapesca.lojadepesca.repository.CarrinhoRepository;
+import br.com.lojapesca.lojadepesca.repository.ItemRepository;
+import br.com.lojapesca.lojadepesca.repository.ProdutoRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
 @Component
 public class CarrinhoBo {
 
+    @Autowired
+    ItemBO itemBO;
+    private final ItemRepository itemRepository;
+    private final ItemMapper itemMapper;
+    private final CarrinhoRepository carrinhoRepository;
+    private ProdutoMapper produtoMapper;
+    private ProdutoRepository produtoRepository;
+
+    public CarrinhoBo(ProdutoMapper produtoMapper, CarrinhoRepository carrinhoRepository,
+                      ItemMapper itemMapper, ProdutoRepository produtoRepository,
+                      ItemRepository itemRepository) {
+        this.carrinhoRepository = carrinhoRepository;
+        this.produtoMapper = produtoMapper;
+        this.itemMapper = itemMapper;
+        this.produtoRepository = produtoRepository;
+        this.itemRepository = itemRepository;
+    }
 
     ConexaoBancoBo conexaoBancoBo = new ConexaoBancoBo();
 
+
     public CarrinhoDTO adicionarProdutoCarrinho(CarrinhoDTO carrinhoDTO) throws Exception {
-        String mensagem = "";
-        String descricao = "";
         Double preco = 0.00;
         Integer quantidade = 0;
-
-        Double valorTotalItem = 0.00;
         Long id = null;
-        Long idCarrinho = null;
-        ItemBO itemBO = new ItemBO();
+
         ProdutoBo produtoBo = new ProdutoBo();
-        Integer quantidadeItem = null;
-        Double valorTotalCarrinho = null;
-        Long idItem = null;
-        Double valorUnitario = 0.00;
+        Carrinho carrinho = new Carrinho();
+        List<Item> itensCarrinho = new ArrayList<>();
+        Integer quantidadeCarrinho = 0;
+        Double valorCarrinho = 0.00;
+        Double valorTotal = 0.00;
+        Integer quantidadeItem = 0;
+        Double valorCarrinhoTotal = 0.00;
+
+        Map<Long, Item> mapaItensPorId = new HashMap<>();
+
+        for (ItemDTO itemDTO : carrinhoDTO.getItens()) {
+            String nome = itemDTO.getProdutoDTO().getNome();
+
+            id = itemDTO.getProdutoDTO().getIdProduto();
+            itemBO.adicionarItens(itemDTO);
+
+            ProdutoDTO produtoDTO = itemDTO.getProdutoDTO();
+            // Verifique se o produtoDTO está presente
+            if (produtoDTO != null) {
+                // Verifique se o nome do produto não está vazio ou nulo
+                if (!produtoDTO.getNome().trim().isEmpty()) {
+                    // Configure os atributos do item
+                    quantidade = itemDTO.getQuantidade();
+                    preco = produtoDTO.getPreco();
+                    id = produtoDTO.getIdProduto();
+                    valorTotal = itemDTO.getValorTotal();
+
+                    // Busque o produto existente do banco de dados
+                    Produto produto = produtoRepository.findById(id).orElseThrow(() -> new Exception("Produto não encontrado para o id: "));
+
+                    Item item = new Item();
+
+                    item.setCarrinho(carrinho);
+                    item.setProduto(produto);
+
+                    item.setQuantidadeProduto(quantidade);
+                    item.setValorTotal(valorTotal);
 
 
-        for (ItemDTO item : carrinhoDTO.getItens()) {
-            String nome = item.getProdutoDTO().getNome();
+                    quantidadeItem = quantidadeCarrinho += itemDTO.getQuantidade();
+                    carrinho.setQuantidade(quantidadeItem);
+                    valorCarrinhoTotal = valorCarrinho += valorTotal;
+                    carrinho.setValorTotal(valorCarrinhoTotal);
 
 
-            idItem = item.getIdItem();
-
-            if (item.getProdutoDTO().getNome().trim().isEmpty() || item.getProdutoDTO().equals("")) {
-                throw new Exception(mensagem = "Erro: Verifique as informações do produto.");
-            }
-
-            ItemDTO itemDTO = itemBO.obterDadosItemId(idItem);
-
-            preco = itemDTO.getValorTotal();
-            quantidade = itemDTO.getQuantidade();
-
-
-            try {
-                String sql = "SELECT id_produto, id_carrinho, quantidade_produto, valor_total_item FROM item WHERE id_item = ?";
-                PreparedStatement statement = conexaoBancoBo.getConnection().prepareStatement(sql);
-                statement.setLong(1, idItem);
-                ResultSet resultSet = statement.executeQuery();
-                id = item.getProdutoDTO().getIdProduto();
-
-
-                if (resultSet.next()) {
-                    statement.setLong(1, id);
-                    id = resultSet.getLong("id_produto");
-                    idCarrinho = resultSet.getLong("id_carrinho");
-
-                    preco = resultSet.getDouble("valor_total_item");
-                    quantidade = resultSet.getInt("quantidade_produto");
-                    item.getProdutoDTO().getIdProduto();
-
-
-                    valorTotalItem += preco;
-                    valorTotalCarrinho = valorTotalItem * quantidade;
-
-
-                    if (idCarrinho == (0) || (idCarrinho.longValue() == 0L) || idCarrinho.equals(null)) {
-                        try {
-                            String sqlInsercao = "INSERT INTO carrinho (quantidade, valor_total) VALUES (?, ?)";
-                            PreparedStatement statementInsercao = conexaoBancoBo.getConnection().prepareStatement(sqlInsercao);
-                            statementInsercao.setInt(1, quantidade);
-                            statementInsercao.setDouble(2, valorTotalCarrinho);
-
-
-                            int rowsAffected = statementInsercao.executeUpdate();
-
-
-                            if (rowsAffected > 0) {
-                                mensagem = "Produto incluído com sucesso.";
-
-
-                                resultSet.close();
-                                statementInsercao.close();
-                            }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                        String sqlItem = "SELECT id_carrinho FROM carrinho WHERE id_item = ?";
-                        PreparedStatement statement1 = conexaoBancoBo.getConnection().prepareStatement(sqlItem);
-                        statement.setLong(1, idItem);
-
-                        ResultSet resultSet1 = statement.executeQuery();
-                        if (resultSet1.next()) {
-                            idCarrinho = resultSet1.getLong("id_carrinho");
-
-                            try {
-                                String sqlAtualizar = "UPDATE item SET id_carrinho = ? WHERE id_item= ?";
-                                PreparedStatement statementUpdate = conexaoBancoBo.getConnection().prepareStatement(sqlAtualizar);
-                                statementUpdate.setLong(1, idCarrinho);
-                                statementUpdate.setLong(1, idItem);
-                                statementUpdate.close();
-
-
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        carrinhoDTO.setQuantidadeProduto(quantidade);
-                        carrinhoDTO.setPrecoTotalProduto(valorTotalItem);
-
-
+                    if (mapaItensPorId.containsKey(id)) {
+                        // Atualizar quantidade e valor se o produto já estiver no carrinho
+                        Item itemExistente = mapaItensPorId.get(id);
+                        itemExistente.setQuantidadeProduto(itemExistente.getQuantidadeProduto() + quantidade);
+                        itemExistente.setValorTotal(itemExistente.getValorTotal() + valorTotal);
                     } else {
-                        try {
 
-                            sql = "UPDATE carrinho SET quantidade = ?, valor_total = ? WHERE id_carrinho = ?";
-                            PreparedStatement statementUpdate = conexaoBancoBo.getConnection().prepareStatement(sql);
-                            statementUpdate.setInt(1, quantidade);
-                            statementUpdate.setDouble(2, preco);
-                            statementUpdate.setLong(3, id);
+                        // Adicionar item ao mapa para rastrear por ID do produto
+                        mapaItensPorId.put(id, item);
 
-                            int executarAtualizacao = statementUpdate.executeUpdate();
-                            if (executarAtualizacao > 0) {
-                            }
-                            resultSet.close();
-                            statementUpdate.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+                        itensCarrinho.add(item);
                     }
+                } else {
+                    throw new Exception("Erro: Verifique as informações do produto.");
                 }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                throw new Exception("Erro: Produto não especificado para o item.");
             }
+            carrinhoDTO.setQuantidadeProduto(quantidadeItem);
+            carrinhoDTO.setPrecoTotalProduto(valorCarrinho);
         }
-        carrinhoDTO.setQuantidadeProduto(quantidade);
-        carrinhoDTO.setPrecoTotalProduto(valorTotalCarrinho);
 
+
+        // Associe a lista de itens ao carrinho
+        carrinho.setItens(itensCarrinho);
+
+        // Salve o carrinho no repositório
+        Carrinho carrinhoSalvo = carrinhoRepository.save(carrinho);
 
         return carrinhoDTO;
     }
 
-    public List<CarrinhoDTO> listarCarrinho() {
-        CarrinhoDTO carrinhoDTO = new CarrinhoDTO();
+
+    public List<CarrinhoDTO> listarCarrinho() throws Exception {
+        List<CarrinhoDTO> carrinhos = new ArrayList<>();
+
 
         try {
-            String sql = "SELECT * FROM carrinho";
+            // Mapear a lista de Optionals para uma lista de ItemDTO
+            for (Carrinho carrinho : carrinhoRepository.findAll()) {
+                CarrinhoDTO carrinhoDTO = new CarrinhoDTO();
+                Long idCarrinho = carrinho.getId();
+                carrinhoDTO.setId(idCarrinho);
 
-            PreparedStatement statement = conexaoBancoBo.getConnection().prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                List<ItemDTO> itens = (List<ItemDTO>) resultSet.getObject("itens");
-                Integer quantidade = resultSet.getInt("quantidade");
-                Double preco = resultSet.getDouble("valor_total");
+                carrinhoDTO.setPrecoTotalProduto(carrinho.getValorTotal());
+                carrinhoDTO.setQuantidadeProduto(carrinho.getQuantidade());
 
-                // Crie um objeto Produto com os dados do ResultSet
-                carrinhoDTO = new CarrinhoDTO(itens, quantidade, preco);
+                // Obter dados do item para o carrinho atual
+                List<Optional<ItemDTO>> itensDoCarrinho = itemBO.obterDadosIdCarrinho(idCarrinho);
 
-                Carrinho carrinho = new Carrinho();
-                carrinho.add(carrinhoDTO);
+                // Mapear a lista de Optionals para uma lista de ItemDTO
+                List<ItemDTO> itensList = itensDoCarrinho.stream()
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
+
+                // Adicionar itens ao carrinho (se existirem)
+                if (!itensList.isEmpty()) {
+                    carrinhoDTO.setItens(itensList);
+                } else {
+                    // Lançar uma exceção ou tratar de acordo com a lógica desejada quando não há itens
+                    throw new Exception();
+                }
+
+
+                // Adicionar o CarrinhoDTO à lista
+                carrinhos.add(carrinhoDTO);
             }
-
-            resultSet.close();
-            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return (List<CarrinhoDTO>) carrinhoDTO;
+        return carrinhos;
+    }
+
+    public List<CarrinhoDTO> listarCarrinhoId(Long id) throws Exception {
+        if (id.equals(null) || id.describeConstable().isEmpty() || id.equals("") || id.equals(" ") ||id ==null) {
+            throw new Exception();
+        } else {
+            List<CarrinhoDTO> carrinhos = new ArrayList<>();
+            CarrinhoDTO carrinhoDTO = new CarrinhoDTO();
+
+
+            try {
+                Optional<Carrinho> carrinho = carrinhoRepository.findById(id);
+                carrinhoDTO.setId(carrinho.get().getId());
+                carrinhoDTO.setPrecoTotalProduto(carrinho.get().getValorTotal());
+                carrinhoDTO.setQuantidadeProduto(carrinho.get().getQuantidade());
+
+                // Obter dados do item para o carrinho atual
+                List<Optional<ItemDTO>> itensDoCarrinho = itemBO.obterDadosIdCarrinho(id);
+
+                // Mapear a lista de Optionals para uma lista de ItemDTO
+                List<ItemDTO> itensList = itensDoCarrinho.stream()
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
+
+                // Adicionar itens ao carrinho (se existirem)
+                if (!itensList.isEmpty()) {
+                    carrinhoDTO.setItens(itensList);
+                }
+
+                // Adicionar o CarrinhoDTO à lista
+                carrinhos.add(carrinhoDTO);
+            } catch (
+                    SQLException e) {
+                e.printStackTrace();
+            }
+            return carrinhos;
+        }
     }
 }
+
+

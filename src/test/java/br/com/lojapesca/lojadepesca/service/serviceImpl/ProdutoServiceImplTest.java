@@ -14,4 +14,13 @@ class ProdutoServiceImplTest {
     @Test
     void inserirProduto() {
     }
+
+    @Test
+    void atualizarProduto(){}
+
+    @Test
+    void listarProdutos(){}
+
+    @Test
+    void deletarProduto(){}
 }

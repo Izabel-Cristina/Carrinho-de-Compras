@@ -5,4 +5,6 @@ import br.com.lojapesca.lojadepesca.dto.ResponseDTO;
 
 public interface CarrinhoService {
     ResponseDTO<CarrinhoDTO> carrinho(CarrinhoDTO carrinhoDTO);
+    ResponseDTO<CarrinhoDTO>listarCarrinho();
+    ResponseDTO<CarrinhoDTO>listarCarrinhoId(Long id);
 }

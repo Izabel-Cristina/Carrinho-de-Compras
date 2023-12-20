@@ -59,7 +59,9 @@ public class ResponseDTO<T> {
         ERROR_DELETAR_PRODUTO(4, "Erro ao tentar deletar o produto"),
         ERROR_CARRINHO(5,"Verifique os itens no seu carrinho"),
         ERROR_REMOVER_ITEM(6,"Erro ao tentar remover item"),
-        ERROR_ATUALIZAR_QUANTIDADE_ITEM(7,"Erro ao tentar atualizar a quantidade, verifique o produto informado.");
+        ERROR_ATUALIZAR_QUANTIDADE_ITEM(7,"Erro ao tentar atualizar a quantidade, verifique o produto informado."),
+        ERROR_LOGIN(8,"Erro ao tentar realizar login"),
+        ERROR_REGISTRO(8,"Erro ao tentar realizar o registro de um novo usuário");
 
         private Integer code;
         private String messageCode;

@@ -68,13 +68,13 @@ public class ProdutoResource extends BaseResource {
         return (ResponseEntity<ResponseDTO<ProdutoDTO>>) list(produtoService.obterProdutosNome(nome));
     }
 
-    @Operation(summary = "Atualizar Produto", method = "PATCH")
+    @Operation(summary = "Atualizar Produto", method = "PUT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "operação realizada com sucesso"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Falha na operação")})
-    @PatchMapping(value = "/atualizarProduto")
+    @PutMapping(value = "/atualizarProduto")
     public ResponseEntity<ResponseDTO<ProdutoDTO>> atualizarProduto(@RequestBody(required = false) @Valid ProdutoDTO produtoDTO){
         return (ResponseEntity<ResponseDTO<ProdutoDTO>>)updatedCodeReturn(produtoService.atualizarProduto(produtoDTO));
     }
@@ -87,9 +87,9 @@ public class ProdutoResource extends BaseResource {
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Falha na operação")})
-    @DeleteMapping(value = "deletarproduto")
-    public ResponseEntity<ResponseDTO<ProdutoDTO>>deletarProduto(@RequestParam(required = false)Long id){
-        return (ResponseEntity<ResponseDTO<ProdutoDTO>>) deleteCodeReturn(produtoService.deletarProduto(id));
+    @DeleteMapping(value = "/deletarproduto/{idProduto}")
+    public ResponseEntity<ResponseDTO<ProdutoDTO>>deletarProduto(@PathVariable(required = false)Long idProduto){
+        return (ResponseEntity<ResponseDTO<ProdutoDTO>>) deleteCodeReturn(produtoService.deletarProduto(idProduto));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

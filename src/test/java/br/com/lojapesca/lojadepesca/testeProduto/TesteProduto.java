@@ -32,8 +32,7 @@ public class TesteProduto {
         produtoDTO.setNome("Vara");
         produtoDTO.setDescricao("Vara intermediária para auxiliar na sua pesca");
         produtoDTO.setPreco(170.00);
-        String mensagem = produtoBo.inserirProduto(produtoDTO);
-        Assert.<Exception>assertEquals("Produto incluído com sucesso.", mensagem);
+        Assert.<Exception>assertThrows(Exception.class,()->produtoBo.inserirProduto(produtoDTO));
     }
 
     @Test
@@ -58,10 +57,10 @@ public class TesteProduto {
     public void testListarProdutos() {
         ProdutoDTO produtoDTO = new ProdutoDTO();
         //Verificar se a lista está vazia
-        List<Produto> produtos = produtoBo.listarProdutos();
+        List<ProdutoDTO> listarProdutos = produtoBo.listarProdutos();
 // Verifique se a lista de produtos não é nula e não está vazia
-        assertNotNull(produtos);
-        assertFalse(produtos.isEmpty());
+        assertNotNull(listarProdutos);
+        assertFalse(listarProdutos.isEmpty());
     }
 
 

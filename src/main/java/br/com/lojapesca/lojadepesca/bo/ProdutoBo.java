@@ -64,25 +64,29 @@ public class ProdutoBo {
         return mensagem;
     }
 
-    public List<Produto> listarProdutos() {
-        List<Produto> produtos = new ArrayList<>();
+    public List<ProdutoDTO> listarProdutos() {
+        List<ProdutoDTO> produtos = new ArrayList<>();
+
         try {
-            ProdutoDTO produtoDTO = new ProdutoDTO();
-
             String sql = "SELECT * FROM produto";
-
             PreparedStatement statement = conexaoBancoBo.getConnection().prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
+                Long id = resultSet.getLong("id_produto");
                 String nome = resultSet.getString("nome");
                 String descricao = resultSet.getString("descricao");
                 Double preco = resultSet.getDouble("preco");
 
-                // Crie um objeto Produto com os dados do ResultSet
-                Produto produto = new Produto(nome, descricao, preco);
+                // Crie um objeto ProdutoDTO com os dados do ResultSet
+                ProdutoDTO produtoDTO = new ProdutoDTO();
+                produtoDTO.setIdProduto(id);
+                produtoDTO.setNome(nome);
+                produtoDTO.setDescricao(descricao);
+                produtoDTO.setPreco(preco);
 
                 // Adicione o produto à lista de produtos
-                produtos.add(produto);
+                produtos.add(produtoDTO);
             }
 
             resultSet.close();

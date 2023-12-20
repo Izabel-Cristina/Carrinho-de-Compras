@@ -10,5 +10,4 @@ import java.util.stream.Collectors;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    List<Produto> findByNome(String nome);
 }

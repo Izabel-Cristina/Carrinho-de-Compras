@@ -3,8 +3,6 @@ package br.com.lojapesca.lojadepesca.domain;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,15 +32,6 @@ public class Produto implements Serializable {
     @Nullable
     private Double preco;
 
-
     public Produto(String nome, String descricao, Double preco) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-    }
-
-    public Produto(String nome, double preco) {
-        this.nome = nome;
-        this.preco = preco;
     }
 }

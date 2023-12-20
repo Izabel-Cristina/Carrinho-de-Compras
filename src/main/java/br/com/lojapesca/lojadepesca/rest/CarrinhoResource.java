@@ -27,7 +27,7 @@ public class CarrinhoResource extends BaseResource {
     @Autowired
     CarrinhoService carrinhoService;
 
-    @Operation(summary = "Listar e realizar o calculo do valor total dos produtos que estão dentro do carrinho(Resumo do carrinho)", method = "GET")
+    @Operation(summary = "l(Resumo do carrinho)", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "operação realizada com sucesso"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
@@ -38,6 +38,28 @@ public class CarrinhoResource extends BaseResource {
         return (ResponseEntity<ResponseDTO>) createdCodeReturn(carrinhoService.carrinho(carrinhoDTO));
     }
 
+
+    @Operation(summary = "Listar todos os carinhos, somente ADMIN)", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "operação realizada com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Falha na operação")})
+    @GetMapping("/listarcarrinho")
+    public ResponseEntity<ResponseDTO>listarCarrinho() {
+        return (ResponseEntity<ResponseDTO>) list(carrinhoService.listarCarrinho());
+    }
+
+    @Operation(summary = "Listar Carrinho ID, somente ADMIN)", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "operação realizada com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Falha na operação")})
+    @GetMapping("/listarcarrinhoid")
+    public ResponseEntity<ResponseDTO<CarrinhoDTO>>listarCarrinhoId(@RequestParam @Valid Long id) {
+        return (ResponseEntity<ResponseDTO<CarrinhoDTO>>) list(carrinhoService.listarCarrinhoId(id));
+    }
     //Resource usado para realizar as validações com a dependencia validation
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

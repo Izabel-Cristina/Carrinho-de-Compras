@@ -24,9 +24,10 @@ public class Carrinho implements Serializable {
     @Column(name = "id_carrinho")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @JoinColumn(name = "id_carrinho", referencedColumnName = "id_carrinho")
+    //    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+//    @JoinColumn(name = "id_carrinho", referencedColumnName = "id_carrinho")
+//    private List<Item> itens = new ArrayList<>();
+    @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> itens = new ArrayList<>();
 
     @Nullable
@@ -35,6 +36,4 @@ public class Carrinho implements Serializable {
     @Nullable
     private Double valorTotal;
 
-    public void add(CarrinhoDTO carrinhoDTO) {
-    }
 }
